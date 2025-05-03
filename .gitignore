@@ -1,0 +1,23 @@
+# Visual Studio 관련
+.vs/
+*.user
+*.suo
+
+# 빌드 파일 및 데이터베이스
+*.obj
+*.exe
+*.dll
+*.log
+*.db
+*.VC.*
+*.ipch
+*.pch
+*.opensdf
+*.sdf
+
+# 백업 파일
+*.bak
+*.tmp
+
+# 기타 무시하고 싶은 것
+*.DS_Store
