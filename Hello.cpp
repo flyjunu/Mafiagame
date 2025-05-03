@@ -1,7 +1,7 @@
-#include <iostream>
+ï»¿#include <iostream>
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
-    //ÁÖ¼® Ãß°¡
+    //ì£¼ì„ ì¶”ê°€
     return 0;
 }
