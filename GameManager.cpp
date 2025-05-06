@@ -20,7 +20,7 @@ GameManager::GameManager() {
     turn       = 1;
 
     for (int i = 0; i < playerCount; ++i) {
-        cout << i+1 << "번 플레이어 이름: ";
+        cout << i << "번 플레이어 이름: ";
         getline(cin, playerName[i]);
     }
 
