@@ -18,4 +18,9 @@ public:
 
     // 투표 집계 초기화
     void resetVotes();
+
+    // 플레이어별 최댓값(득표수)을 반환
+    int  getMaxVotes() const;
+    // 특정 득표수에 대해 동표가 있는지 검사
+    bool hasTie(int votes) const;
 };

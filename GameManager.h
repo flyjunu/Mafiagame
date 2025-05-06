@@ -17,6 +17,7 @@ class GameManager {
         int          turn;        // 현재 턴
         std::string* playerName;  // 플레이어 이름
         bool lastAlive[100];      // 사망 플레이어 체크    
+        int lastDetectiveTarget;  // 경찰이 전날 조사한 플레이어 번호호
 
     public:
         GameManager();             // 생성자: 플레이어 수 입력·생성·역할 할당
