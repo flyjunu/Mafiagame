@@ -1,11 +1,12 @@
 #pragma once
 #include "Player.h"
-#include "Mafia.h"
+#include "VoteSystem.h"
+#include "Citizen.h"
 #include "Doctor.h"
 #include "Detective.h"
-#include "Citizen.h"
+#include "Mafia.h"
 #include "AmnesiaPlayer.h"
-#include "VoteSystem.h"
+#include <string>
 
 
 class GameManager {
@@ -14,7 +15,7 @@ class GameManager {
         int          playerCount; // 플레이어 수
         VoteSystem*  vote;        // 투표 시스템
         int          turn;        // 현재 턴
-        string*      playerName;  // 플레이어 이름
+        std::string* playerName;  // 플레이어 이름
         bool lastAlive[100];      // 사망 플레이어 체크    
 
     public:
