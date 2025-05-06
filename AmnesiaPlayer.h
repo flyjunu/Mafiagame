@@ -1,19 +1,23 @@
 #pragma once
 #include "Player.h"
-#include <string>
-using namespace std;
+#include "VoteSystem.h"
 
+// AmnesiaPlayer: 자신의 역할을 숨기고, hiddenRole에 따라 행동
 class AmnesiaPlayer : public Player {
 private:
-    string hiddenRole;   // 실제 역할: "Doctor"/"Detective"/"Citizen"
+    std::string hiddenRole;
+    VoteSystem* nightVote;
+    int myIndex;
+
 public:
-    //플레이어명, 실제 직업명
-    AmnesiaPlayer(string& name, string& initialHiddenRole);
+    AmnesiaPlayer(const std::string& name,
+                  const std::string& initialHiddenRole,
+                  int index, VoteSystem* voteSys);
     virtual ~AmnesiaPlayer();
 
-    void setHiddenRole(const string& newRole);
-    string getHiddenRole() const;
+    void setHiddenRole(const std::string& newRole);
+    std::string getHiddenRole() const;
 
-    void nightAction() override;     // 밤 행동 (hiddenRole 기반)
-    string getRole() override; // 항상 "???"
+    void nightAction() override;
+    std::string getRole() const override;
 };
