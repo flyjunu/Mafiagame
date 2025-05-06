@@ -1,55 +1,21 @@
 #pragma once
-#include <iostream>
-#include <unordered_map>
-#include <string>
-#include <vector>
 
+// 투표 집계 시스템
 class VoteSystem {
 private:
-    std::unordered_map<std::string, int> voteBox;
+    int numPlayers;   // 플레이어 수
+    int* voteCounts;  // 각 플레이어가 받은 표 수
 
 public:
-    // 투표하기
-    void vote(const std::string& playerName) {
-        voteBox[playerName]++;
-    }
+    VoteSystem(int n);
+    ~VoteSystem();
 
-    // 최다 득표자 출력
-    std::string getTopVotedPlayer() const {
-        if (voteBox.empty()) return "없음";
+    // from 플레이어가 to 플레이어에게 투표
+    void vote(int from, int to);
 
-        int maxVotes = 0;
-        std::vector<std::string> topPlayers;
+    // 가장 많은 표를 받은 플레이어 번호 반환
+    int getMostVotedPlayer() const;
 
-        for (const auto& pair : voteBox) {
-            if (pair.second > maxVotes) {
-                maxVotes = pair.second;
-                topPlayers.clear();
-                topPlayers.push_back(pair.first);
-            }
-            else if (pair.second == maxVotes) {
-                topPlayers.push_back(pair.first);
-            }
-        }
-
-        if (topPlayers.size() == 1) {
-            return topPlayers[0];
-        }
-        else {
-            return "동률";
-        }
-    }
-
-    // 투표함 리셋
-    void resetVotes() {
-        voteBox.clear();
-    }
-
-    // 투표 결과 출력
-    void printVoteResults() const {
-        std::cout << "투표 결과:" << std::endl;
-        for (const auto& pair : voteBox) {
-            std::cout << pair.first << ": " << pair.second << "표" << std::endl;
-        }
-    }
+    // 투표 집계 초기화
+    void resetVotes();
 };
