@@ -25,7 +25,7 @@ void AmnesiaPlayer::nightAction() {
     if (!isAlive()) return;
     int target;
     std::cout << "[Amnesia] " << getName()
-              << "님, 행동할 플레이어 번호를 입력하세요 (내 역할: ???): ";
+              << "님, 행동할 플레이어 번호를 입력하세요 (내 역할: ?" << "?" << "?" <<"):\n";
     if (std::cin >> target) {
         nightVote->vote(myIndex, target);
         std::cout << "[Amnesia] 투표가 정상 등록되었습니다.\n";
