@@ -316,6 +316,7 @@ void GameManager::runDayPhase() {
         if (players[i]->isAlive()) ++neededVotes;
     int votesCast = 0;
     int abstainCount = 0;
+    int checkVoted[100] = { false }; // 투표 여부 검사
     //타이머
     for (int sec = totalSec;sec >= 0;--sec) {
         if (sec == 120)      std::cout << "\n>>> 2분 남았습니다! <<<\n";
@@ -365,15 +366,24 @@ void GameManager::runDayPhase() {
                 if(to != -1) to--;
                 
                 if (from >= 0 && from < playerCount && players[from]->isAlive()) {
+                    if (checkVoted[from]) {
+                        cout << "\n[이미 투표를 완료한 플레이어입니다.]\n";
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        continue;
+                    }
+                    
                     if (to == -1) {
                         // 기권 처리
                         ++abstainCount;
                         ++votesCast;
+                        checkVoted[from] = true;
                         cout << "\n[기권 등록되었습니다]\n";
                     }
                     else if (to >= 0 && to < playerCount) {
                         vote->vote(from, to);
                         ++votesCast;
+                        checkVoted[from] = true;
                         cout << "\n[" << from+1 << "번 투표 완료]\n";
                     }
                     else {

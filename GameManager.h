@@ -30,6 +30,8 @@ class GameManager {
         int detectiveCount;
         int amnesiaCount;
         int lastDetectiveActor = -1; // 경찰이 조사한 플레이어 번호
+        bool checkVoted[100] = {false}; //투표여부 검사
+
     public:
         GameManager(const GameSetting& setting);             // 생성자: 플레이어 수 입력·생성·역할 할당
         ~GameManager();            // 소멸자: 메모리 해제
