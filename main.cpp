@@ -2,11 +2,12 @@
 #include <conio.h> // _kbhit(), _getch()
 #include <limits>
 #include "GameManager.h"
+#include "AscciArt.h"
 using namespace std;
 
 GameSetting currentSetting;
 
-enum MenuOption { START_GAME, CHANGE_SETTING, CHANGE_MODE, MENU_COUNT };
+enum MenuOption { START_GAME, CHANGE_SETTING, MENU_COUNT };
 
 void startGame(const GameSetting& setting) {
     GameManager gm(setting);
@@ -26,8 +27,9 @@ void changesetting(GameSetting& setting) {
         cout << "마피아 수: ";        cin >> setting.mafia;
         cout << "의사 수: ";        cin >> setting.doctor;
         cout << "경찰 수: ";        cin >> setting.detective;
+        cout << "공작원 수: ";      cin >> setting.agent;
         cout << "암네시아 수 (0이면 미사용): "; cin >> setting.amnesia;
-
+        
         int sum = setting.mafia + setting.doctor + setting.detective + setting.amnesia;
         if (sum > setting.playerCount) {
             cout << "직업 수가 플레이어 수보다 많습니다. 다시 시도하세요.\n\n";
@@ -49,8 +51,8 @@ void showOptions() {
 
 void drawMenu(int selected) {
     system("cls"); // 콘솔 화면 초기화 (윈도우 환경)
-
-    string menu[MENU_COUNT] = { "게임 시작", "플레이어 세팅", "모드 변경" };
+    cout << getTitleArt() << endl;
+    string menu[MENU_COUNT] = { "게임 시작", "플레이어 세팅" };
 
     for (int i = 0; i < MENU_COUNT; ++i) {
         if (i == selected)
@@ -85,9 +87,7 @@ int main() {
                 case CHANGE_SETTING:
                     changesetting(currentSetting);
                     break;
-                case CHANGE_MODE:
-                    showOptions();
-                    break;
+                
             }
             cout << "\n되돌아 가려면 아무 키나 누르세요...";
             _getch();

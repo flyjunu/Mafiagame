@@ -6,6 +6,8 @@
 #include "Detective.h"
 #include "Mafia.h"
 #include "AmnesiaPlayer.h"
+#include "Agent.h"
+#include "AscciArt.h"
 #include <string>
 
 struct GameSetting {
@@ -14,6 +16,7 @@ struct GameSetting {
     int doctor = 1;
     int detective = 1;
     int amnesia = 0;
+    int agent = 1;
 };
 
 class GameManager {
@@ -29,8 +32,10 @@ class GameManager {
         int doctorCount;
         int detectiveCount;
         int amnesiaCount;
+        int agentCount;
         int lastDetectiveActor = -1; // 경찰이 조사한 플레이어 번호
         bool checkVoted[100] = {false}; //투표여부 검사
+        int agentTarget[100] = { -1 };
 
     public:
         GameManager(const GameSetting& setting);             // 생성자: 플레이어 수 입력·생성·역할 할당

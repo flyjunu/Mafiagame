@@ -16,11 +16,13 @@ GameManager::GameManager(const GameSetting& setting) {
     doctorCount = setting.doctor;
     detectiveCount = setting.detective;
     amnesiaCount = setting.amnesia;
+    agentCount = setting.agent;
+    
     std::cout << "마피아 게임에 오신 여러분을 환영합니다. " << std::endl;
     
     std::cout << "플레이어 수: " << playerCount << ", 마피아: " << mafiaCount
         << ", 의사: " << doctorCount << ", 경찰: " << detectiveCount
-        << ", 암네시아: " << amnesiaCount << "\n\n";
+        << ", 공작원: " << agentCount << ", ???: " << amnesiaCount <<", \n\n";
     
     playerName = new string[playerCount];
     players = new Player * [playerCount];
@@ -43,9 +45,27 @@ GameManager::GameManager(const GameSetting& setting) {
 
     std::cout << "\n[플레이어 이름 : 번호]\n";
     for (int i = 0; i < playerCount; ++i) {
-        std::cout << playerName[i] << " : " << i+1 << "\n";
+        std::string role = players[i]->getRole();
+        if (role == "Mafia") cout << getMafiaArt();
+        else if (role == "Doctor") cout << getDoctorArt();
+        else if (role == "Detective") cout << getDetectiveArt();
+        else if (role == "Agent") cout << getAgentArt();
+        else if (role == "Citizen") cout << getCitizenArt();
+        else if (role == "???") cout << getAmnesiaArt();
+        else cout << "Unknown Role";   
+     
+
+        std::cout << playerName[i] << "님의 번호 : " << i+1 << "번, 직업:"<< role <<"\n";
         lastAlive[i] = true;
+
+        std::cout << "\n다음 플레이어를 보려면 엔터를 누르세요...";
+        while (_getch() != 13); // 엔터(ASCII 13) 입력시만 다음으로
+            system("cls"); // (옵션) 다음 정보 전 화면 지우기
+
     }
+    // agentTarget 초기화
+    for (int i = 0; i < 100; ++i) agentTarget[i] = -1;
+    
 }
 
 GameManager::~GameManager() {
@@ -57,7 +77,7 @@ GameManager::~GameManager() {
 }
 
 void GameManager::assignRoles() {
-    int citizenCount = playerCount - (mafiaCount + doctorCount + detectiveCount);
+    int citizenCount = playerCount - (mafiaCount + doctorCount + detectiveCount+ agentCount);
 
     string roles[100];
     int idx = 0;
@@ -65,6 +85,7 @@ void GameManager::assignRoles() {
     for (int i = 0; i < doctorCount; ++i) roles[idx++] = "Doctor";
     for (int i = 0; i < detectiveCount; ++i) roles[idx++] = "Detective";
     for (int i = 0; i < citizenCount; ++i) roles[idx++] = "Citizen";
+    for (int i = 0; i < agentCount; ++i) roles[idx++] = "Agent";
 
     for (int i = playerCount - 1; i > 0; --i) {
         int j = rand() % (i + 1);
@@ -79,6 +100,8 @@ void GameManager::assignRoles() {
         }
     }
 
+    
+
     for (int i = 0; i < playerCount; ++i) {
         const string& nm = playerName[i];
         const string& rl = roles[i];
@@ -90,6 +113,8 @@ void GameManager::assignRoles() {
             players[i] = new Doctor(nm, i, vote);
         else if (rl == "Detective")
             players[i] = new Detective(nm, i, vote);
+        else if (rl == "Agent")
+            players[i] = new Agent(nm, i, vote);
         else
             players[i] = new Citizen(nm);
     }
@@ -161,6 +186,9 @@ void GameManager::runNightPhase() {
         if (players[i]->isAlive() && players[i]->getRole() == "Detective")
             actorOrder[orderCount++] = i;
     for (int i = 0; i < playerCount; ++i)
+        if (players[i]->isAlive() && players[i]->getRole() == "Agent")
+            actorOrder[orderCount++] = i;
+    for (int i = 0; i < playerCount; ++i)
         if (players[i]->isAlive() && players[i]->getRole() == "???")
             actorOrder[orderCount++] = i;
 
@@ -215,6 +243,10 @@ void GameManager::runNightPhase() {
                     detectiveTarget = tgt;
                     lastDetectiveActor = actor;  
                     cout << "  → 조사 대상: " << tgt+1 << endl;
+                }
+                else if (role == "Agent") {
+                        agentTarget[actor] = tgt; // agentTarget[공작원인덱스] = 선택대상
+                        cout << "  → 기권 대상: " << tgt+1 << endl;
                 }
                 else { // Citizen or Amnesia-as-Citizen
                     detectiveTarget = tgt;
@@ -303,6 +335,18 @@ void GameManager::runDayPhase() {
         lastDetectiveActor  = -1;  // 초기화
     }
 
+    for (int i = 0; i < playerCount; ++i) {
+    // agentTarget[i]에 기록된 값이 있으면, 해당 플레이어 skipNextVote 설정
+    if (players[i]->getRole() == "Agent" && players[i]->isAlive()) {
+        int tgt = agentTarget[i];
+        if (tgt >= 0 && players[tgt]->isAlive()) {
+            players[tgt]->setSkipNextVote(true);
+            cout << "[공작원의 투표함 조작] " << playerName[tgt] << "님은 이번 낮 투표를 기권합니다.\n";
+        }
+        agentTarget[i] = -1; // 초기화
+    }
+}
+
     for (int i = 0;i < playerCount;++i)
         if (players[i]->isAlive())
             std::cout << " - " << playerName[i] << " (" << i+1 << ")\n";
@@ -366,6 +410,14 @@ void GameManager::runDayPhase() {
                 if(to != -1) to--;
                 
                 if (from >= 0 && from < playerCount && players[from]->isAlive()) {
+                    if (players[from]->shouldSkipNextVote()) {
+                        cout << "\n[공작원 효과] " << playerName[from] << "님은 자동 기권 처리됩니다.\n";
+                        ++abstainCount;
+                        ++votesCast;
+                        checkVoted[from] = true;
+                        players[from]->setSkipNextVote(false); // 한 번만 적용
+                        continue;
+                    }
                     if (checkVoted[from]) {
                         cout << "\n[이미 투표를 완료한 플레이어입니다.]\n";
                         cin.clear();
