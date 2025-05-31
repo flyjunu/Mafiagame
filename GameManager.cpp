@@ -191,6 +191,9 @@ void GameManager::runNightPhase() {
     for (int i = 0; i < playerCount; ++i)
         if (players[i]->isAlive() && players[i]->getRole() == "???")
             actorOrder[orderCount++] = i;
+    for (int i = 0; i < playerCount; ++i)
+        if (players[i]->isAlive() && players[i]->getRole() == "Citizen")
+            actorOrder[orderCount++] = i;
 
     // 3) 각 actor별 대상 입력 (숫자만)
     for (int idx = 0; idx < orderCount; ++idx) {
@@ -245,10 +248,11 @@ void GameManager::runNightPhase() {
                     cout << "  → 조사 대상: " << tgt+1 << endl;
                 }
                 else if (role == "Agent") {
-                        agentTarget[actor] = tgt; // agentTarget[공작원인덱스] = 선택대상
+                        agentTarget[actor] = tgt; 
                         cout << "  → 기권 대상: " << tgt+1 << endl;
                 }
-                else { // Citizen or Amnesia-as-Citizen
+
+                else { 
                     detectiveTarget = tgt;
                     cout << "  → 투표 대상: " << tgt+1 << endl;
                 }
