@@ -251,7 +251,14 @@ void GameManager::runNightPhase() {
                         agentTarget[actor] = tgt; 
                         cout << "  → 기권 대상: " << tgt+1 << endl;
                 }
-
+                else if (role == "Citizen") {
+                    cout << "  [시민은 밤행동이 없습니다.]\n";
+                }
+                else if (role == "???") {
+                    auto* ap = dynamic_cast<AmnesiaPlayer*>(players[actor]);
+                    ap->setHiddenRole(tgt >= 0 ? players[tgt]->getRole() : "Citizen");
+                    cout << "  → ??? 역할 설정: " << players[tgt]->getRole() << endl;
+                }
                 else { 
                     detectiveTarget = tgt;
                     cout << "  → 투표 대상: " << tgt+1 << endl;

@@ -30,7 +30,7 @@ void changesetting(GameSetting& setting) {
         cout << "공작원 수: ";      cin >> setting.agent;
         cout << "암네시아 수 (0이면 미사용): "; cin >> setting.amnesia;
         
-        int sum = setting.mafia + setting.doctor + setting.detective + setting.amnesia;
+        int sum = setting.mafia + setting.doctor + setting.detective;
         if (sum > setting.playerCount) {
             cout << "직업 수가 플레이어 수보다 많습니다. 다시 시도하세요.\n\n";
             cin.clear();
