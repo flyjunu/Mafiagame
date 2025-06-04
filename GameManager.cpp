@@ -29,8 +29,13 @@ GameManager::GameManager(const GameSetting& setting) {
     vote = new VoteSystem(playerCount);
     turn = 1;
     lastDetectiveTarget = -1;
+
     for (int i = 0; i < playerCount; ++i) {
-        std::cout << i+1 << "번 플레이어 이름: ";
+        if (i == 0) {
+        std::cout << "확인 하였으면 엔터를 누르세요" << endl;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+         std::cout << i+1 << "번 플레이어 이름: ";
         getline(cin, playerName[i]);
     }
 
@@ -169,7 +174,7 @@ void GameManager::runNightPhase() {
     }
     
     // 2) 밤 행동 등록 준비
-    cout << "\n\n=== 모든 직업의 밤 행동을 등록합니다 ===\n";
+    cout << "\n\n=== 모든 직업의 밤 행동을 등록합니다.===\n";
     vote->resetVotes();
     int doctorTarget = -1, detectiveTarget = -1;
     int mafiaVotes[100] = { 0 };
@@ -194,7 +199,8 @@ void GameManager::runNightPhase() {
     for (int i = 0; i < playerCount; ++i)
         if (players[i]->isAlive() && players[i]->getRole() == "Citizen")
             actorOrder[orderCount++] = i;
-
+    
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     // 3) 각 actor별 대상 입력 (숫자만)
     for (int idx = 0; idx < orderCount; ++idx) {
         int actor = actorOrder[idx];
@@ -206,12 +212,14 @@ void GameManager::runNightPhase() {
         }
         
         // 반복해서 유효 입력 받을 때까지
+
         while (true) {
             cout << "[" << role << "] " << playerName[actor]
                 << "님, 대상 번호만 입력하세요 (I:목록): ";
             std::string line;
             cin.clear();
             std::getline(std::cin, line);
+            
 
             // I → 목록
             if (line == "I" || line == "i") {
